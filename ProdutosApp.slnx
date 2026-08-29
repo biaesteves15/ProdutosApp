@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ProdutosApp.Api/ProdutosApp.Api.csproj" />
+  <Project Path="ProdutosApp.Domain/ProdutosApp.Domain.csproj" Id="7e214008-6b40-42cb-906b-be06d2cc7b1c" />
+  <Project Path="ProdutosApp.Infra.Data/ProdutosApp.Infra.Data.csproj" Id="5f468541-b95b-4087-a43e-4150876079e0" />
+</Solution>
