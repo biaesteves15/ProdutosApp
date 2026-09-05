@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ProdutosApp.Domain.Entities
 {
@@ -15,6 +16,7 @@ namespace ProdutosApp.Domain.Entities
 
         #region Relacionamentos
 
+        [JsonIgnore]
         public List<Produto>? Produtos { get; set; }
 
         #endregion

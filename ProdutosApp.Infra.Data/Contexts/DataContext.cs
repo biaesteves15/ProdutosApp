@@ -8,10 +8,12 @@ namespace ProdutosApp.Infra.Data.Contexts
 {
     public class DataContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //Método construtor para receber a conexão do banco de dados
+        //Essa sintaxe é especifica do Entity Framework para fazer a
+        //injeção de dependência passndo as configurações do banco
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            //Mapear a string de conexão do banco de dados
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BDProdutos;Integrated Security=True;");
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

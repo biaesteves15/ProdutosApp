@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using ProdutosApp.Infra.Data.Contexts;
+using ProdutosApp.Infra.Data.Repositories;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +11,19 @@ builder.Services.AddOpenApi();
 //Adicionando as configurações da biblioteca Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+#region Configurações de injeção de dependência
+
+//Registrando a classe DataContext para receber a conexão com o banco de dados
+builder.Services.AddDbContext<DataContext>
+    (options => options.UseSqlServer
+        (builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Registrando os repositórios
+builder.Services.AddScoped<CategoriaRepository>();
+builder.Services.AddScoped<ProdutoRepository>();
+
+#endregion
 
 var app = builder.Build();
 
