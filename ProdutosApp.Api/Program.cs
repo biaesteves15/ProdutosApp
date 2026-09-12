@@ -25,6 +25,27 @@ builder.Services.AddScoped<ProdutoRepository>();
 
 #endregion
 
+#region Configurações do CORS
+
+// Capturando as origens permitidas do appsettings.json
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>();
+
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins!)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+#endregion
+
 var app = builder.Build();
 
 //Ativando o Swagger quando o projeto for inicializado
@@ -38,6 +59,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+/// Habilitando o Cors
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
