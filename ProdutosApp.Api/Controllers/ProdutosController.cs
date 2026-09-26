@@ -41,22 +41,79 @@ namespace ProdutosApp.Api.Controllers
             });
         }
 
-        [HttpPut]
-        public IActionResult Put()
+        [HttpPatch("{id}")]
+        public IActionResult Put(Guid id, [FromBody] Dictionary<string, object> request)
         {
-            return Ok();
+            var produto = _produtoRepository.ObterPorId(id);
+            if (produto == null)
+            {
+                return NotFound(new { mensagem = "Produto não encontrado para edição." });
+            }
+
+            //Modificando o nome do produto de o campo vier preeenchido
+            if (request.TryGetValue("nome", out var nome) && !string.IsNullOrWhiteSpace(nome?.ToString()))
+                produto.Nome = nome.ToString()!;
+
+            //Modificando o preço do produto de o campo vier preeenchido
+            if (request.TryGetValue("preco", out var preco) && !string.IsNullOrWhiteSpace(preco?.ToString()))
+                produto.Preco = decimal.Parse(preco?.ToString()!);
+
+            //Modificando a quantidade do produto de o campo vier preeenchido
+            if (request.TryGetValue("quantidade", out var quantidade) && !string.IsNullOrWhiteSpace(quantidade?.ToString()))
+                produto.Quantidade = int.Parse(quantidade?.ToString()!);
+
+            //Modificando o tipo do produto de o campo vier preeenchido
+            if (request.TryGetValue("tipo", out var tipo) && !string.IsNullOrWhiteSpace(tipo?.ToString()))
+                produto.Tipo = (TipoProduto) int.Parse(tipo.ToString()!);
+
+            //Modificando o id da categoria do produto de o campo vier preeenchido
+            if (request.TryGetValue("categoria_id", out var categoriaId) && !string.IsNullOrWhiteSpace(categoriaId?.ToString()))
+                produto.CategoriaId = Guid.Parse(categoriaId.ToString()!);
+
+            //Atualizar o produto no repositório
+            _produtoRepository.Atualizar(produto);
+
+            return Ok(new
+            {
+                mensagem = "Produto atualizado com sucesso!",
+                data_hora = DateTime.Now,
+                produto_id = produto.Id
+            });
         }
 
-        [HttpDelete]
-        public IActionResult Delete()
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
         {
-            return Ok();
+            _produtoRepository.Excluir(id);
+
+            return Ok(new
+            {
+                mensagem = "Produto excluído com sucesso!",
+                data_hora = DateTime.Now,
+                produto_id = id
+            });
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetPorNome([FromQuery] string nome)
         {
-            return Ok();
+            if (string.IsNullOrEmpty(nome))
+                return BadRequest(new { mensagem = "O nome é obrigatório." });
+
+            var produtos = _produtoRepository.ListarPorNome(nome);
+            return Ok(produtos);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetPorId(Guid id)
+        {
+            var produto = _produtoRepository.ObterPorId(id);
+            if(produto == null)
+            {
+                return NotFound(new { mensagem = "Produto não encontrado." });
+            }
+
+            return Ok(produto);
         }
     }
 }
