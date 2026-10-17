@@ -27,5 +27,24 @@ services:
 
     restart: unless-stopped
 
+
+  adminer:
+    image: adminer:latest
+    container_name: produtos-app-adminer
+
+    environment:
+      ADMINER_DEFAULT_SERVER: sqlserver
+      ADMINER_DESIGN: nette
+
+    ports:
+      - "5052:8080"
+
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+
 volumes:
   produtos-app-sqlserver-data:
